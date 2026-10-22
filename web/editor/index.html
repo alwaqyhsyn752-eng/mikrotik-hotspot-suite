@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>المحرر البصري</title>
+<style>
+:root{--bg:#020617;--card:#0b1220;--p:#22d3ee;--text:#e2e8f0;--muted:#94a3b8}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:system-ui,sans-serif;background:var(--bg);color:var(--text);padding:20px;min-height:100vh}
+h1{text-align:center;margin-bottom:20px;font-size:20px;text-shadow:0 0 14px rgba(34,211,238,.5)}
+.wrap{max-width:1200px;margin:0 auto;display:grid;grid-template-columns:320px 1fr;gap:16px}
+@media(max-width:900px){.wrap{grid-template-columns:1fr}}
+.panel{background:var(--card);border:1px solid rgba(34,211,238,.25);border-radius:14px;padding:18px}
+.panel h2{font-size:13px;color:var(--p);margin-bottom:12px;padding-bottom:8px;border-bottom:1px solid rgba(34,211,238,.2)}
+label{display:block;font-size:11px;color:var(--muted);margin:10px 0 4px}
+input[type=text],input[type=number],input[type=color],textarea,select{width:100%;padding:9px;background:#020617;border:1px solid #334155;border-radius:8px;color:var(--text);font-family:inherit;font-size:12px}
+textarea{min-height:60px;resize:vertical}
+.feature{display:flex;align-items:center;justify-content:space-between;padding:8px 0;border-bottom:1px dashed rgba(148,163,184,.1)}
+.feature:last-child{border:none}
+.feature span{font-size:12px}
+.switch{position:relative;width:40px;height:22px}
+.switch input{opacity:0;width:0;height:0}
+.slider{position:absolute;cursor:pointer;inset:0;background:#334155;border-radius:22px;transition:.25s}
+.slider:before{content:'';position:absolute;height:16px;width:16px;left:3px;bottom:3px;background:#fff;border-radius:50%;transition:.25s}
+.switch input:checked+.slider{background:var(--p)}
+.switch input:checked+.slider:before{transform:translateX(18px)}
+.btn{width:100%;padding:11px;margin-top:10px;border:none;border-radius:9px;background:linear-gradient(135deg,var(--p),#0ea5e9);color:#020617;font-weight:800;cursor:pointer;font-size:13px}
+.btn.secondary{background:transparent;border:1px solid rgba(34,211,238,.4);color:var(--p)}
+.preview{background:var(--card);border:1px solid rgba(34,211,238,.25);border-radius:14px;overflow:hidden;min-height:600px}
+.preview iframe{width:100%;height:600px;border:none;background:#020617}
+.sign{text-align:center;font-size:10px;color:var(--muted);margin-top:8px}
+.sign span{color:var(--p)}
+</style>
+</head>
+<body>
+<h1>المحرر البصري — بدون برمجة</h1>
+<div class="wrap">
+  <div class="panel">
+    <h2>الهوية البصرية</h2>
+    <label>اسم الشبكة</label>
+    <input type="text" id="e_netName" value="شبكة المستقبل">
+    <label>رقم الهاتف</label>
+    <input type="text" id="e_phone" value="738660998">
+    <label>اللون الأساسي</label>
+    <input type="color" id="e_color" value="#22d3ee">
+    <label>لون الخلفية</label>
+    <input type="color" id="e_bg" value="#020617">
+    <label>القالب النشط</label>
+    <select id="e_template"></select>
+
+    <h2 style="margin-top:18px">الميزات</h2>
+    <div class="feature"><span>خدمة سلفني</span>
+      <label class="switch"><input type="checkbox" id="e_salafni" checked><span class="slider"></span></label>
+    </div>
+    <div class="feature"><span>استعلام عن كرت</span>
+      <label class="switch"><input type="checkbox" id="e_inquiry" checked><span class="slider"></span></label>
+    </div>
+    <div class="feature"><span>تحميل التطبيق</span>
+      <label class="switch"><input type="checkbox" id="e_app" checked><span class="slider"></span></label>
+    </div>
+    <div class="feature"><span>QR على الكروت</span>
+      <label class="switch"><input type="checkbox" id="e_qr" checked><span class="slider"></span></label>
+    </div>
+
+    <button class="btn" onclick="applyLive()">تحديث المعاينة</button>
+    <button class="btn secondary" onclick="downloadJSON()">تنزيل theme.json</button>
+    <button class="btn secondary" onclick="downloadIndex()">تنزيل index.html</button>
+    <div class="sign">تصميم وتطوير: <span>حسين العولقي</span> | هاتف: <span>738660998</span></div>
+  </div>
+  <div class="preview">
+    <iframe id="previewFrame"></iframe>
+  </div>
+</div>
+<script>
+var TEMPLATES = ['login_01','login_02','login_03','login_04','login_05'];
+var sel = document.getElementById('e_template');
+TEMPLATES.forEach(function(t){
+  var o=document.createElement('option');o.value=t;o.textContent=t;sel.appendChild(o);
+});
+
+function collectConfig(){
+  return {
+    brand:{
+      name:document.getElementById('e_netName').value,
+      primary:document.getElementById('e_color').value,
+      background:document.getElementById('e_bg').value
+    },
+    developer:{phone:document.getElementById('e_phone').value},
+    features:{
+      salafni:document.getElementById('e_salafni').checked,
+      cardInquiry:document.getElementById('e_inquiry').checked,
+      appDownload:document.getElementById('e_app').checked,
+      qrOnVoucher:document.getElementById('e_qr').checked
+    },
+    template:sel.value
+  };
+}
+
+function applyLive(){
+  var cfg = collectConfig();
+  var css =
+    'body{background:'+cfg.brand.background+' !important}'+
+    ':root{--p:'+cfg.brand.primary+' !important;--primary:'+cfg.brand.primary+' !important}'+
+    '.brand h1{color:'+cfg.brand.primary+' !important}'+
+    'button{background:linear-gradient(135deg,'+cfg.brand.primary+',#0ea5e9) !important}';
+  var html =
+    '<html><head><style>'+css+'</style></head><body style="margin:0">'+
+    '<iframe style="width:100%;height:100vh;border:none" src="../../templates/'+cfg.template+'/index.html"></iframe>'+
+    '</body></html>';
+  var blob = new Blob([html],{type:'text/html;charset=utf-8'});
+  document.getElementById('previewFrame').src = URL.createObjectURL(blob);
+}
+
+function downloadJSON(){
+  var cfg = collectConfig();
+  var blob = new Blob([JSON.stringify(cfg,null,2)],{type:'application/json;charset=utf-8'});
+  var a=document.createElement('a');
+  a.href=URL.createObjectURL(blob);
+  a.download='theme.json';
+  a.click();
+}
+
+function downloadIndex(){
+  var cfg = collectConfig();
+  var html='<!DOCTYPE html><html lang="ar" dir="rtl"><head><meta charset="UTF-8">'+
+    '<title>'+cfg.brand.name+'</title><style>body{background:'+cfg.brand.background+
+    ';color:#e2e8f0;font-family:system-ui;display:flex;align-items:center;justify-content:center;min-height:100vh;margin:0}'+
+    '.c{background:#0b1220;padding:32px;border-radius:20px;border:1px solid '+cfg.brand.primary+';max-width:400px;width:90%}'+
+    'h1{color:'+cfg.brand.primary+';text-align:center;margin:0 0 20px}input{width:100%;padding:12px;margin-bottom:10px;background:#020617;border:1px solid #334155;border-radius:8px;color:#e2e8f0;box-sizing:border-box}'+
+    'button{width:100%;padding:12px;border:none;border-radius:8px;background:'+cfg.brand.primary+';color:#020617;font-weight:800;cursor:pointer}'+
+    '.sign{text-align:center;font-size:10px;color:#94a3b8;margin-top:16px}.sign span{color:'+cfg.brand.primary+'}</style></head>'+
+    '<body><div class="c"><h1>'+cfg.brand.name+'</h1>'+
+    '<input placeholder="رقم الكرت"><input type="password" placeholder="كلمة المرور">'+
+    '<button>دخول</button>'+
+    '<div class="sign">تصميم وتطوير: <span>حسين العولقي</span> | هاتف: <span>'+cfg.developer.phone+'</span></div>'+
+    '</div></body></html>';
+  var blob = new Blob([html],{type:'text/html;charset=utf-8'});
+  var a=document.createElement('a');
+  a.href=URL.createObjectURL(blob);
+  a.download='index.html';
+  a.click();
+}
+
+applyLive();
+</script>
+</body>
+</html>
