@@ -54,8 +54,8 @@ h1{text-align:center;margin-bottom:24px;text-shadow:0 0 14px rgba(34,211,238,.5)
     <label>لون التمييز</label>
     <input id="color" type="color" value="#22d3ee">
     <button class="btn" onclick="generate()">توليد الكروت</button>
-    <button class="btn secondary" onclick="window.print()">طباعة / حفظ PDF</button>
-    <button class="btn secondary" onclick="exportCSV()">تصدير CSV</button>
+    <button class="btn secondary" onclick="doPrint()">طباعة / حفظ PDF</button>
+    <button class="btn secondary" onclick="doExport()">تصدير CSV</button>
   </div>
   <div class="preview">
     <div class="stats" id="stats"></div>
@@ -104,15 +104,28 @@ function generate(){
   document.getElementById('stats').innerHTML=
     'إجمالي: <b>'+n+'</b> كرت | قيمة: <b>'+(n*parseFloat(price))+'</b> ريال';
 }
-function exportCSV(){
+function doExport(){
   if(!vouchers.length){alert('ولّد الكروت أولاً');return;}
   var csv='code,network,price,gb,days\n';
   vouchers.forEach(function(v){csv+=v.code+','+v.net+','+v.price+','+v.gb+','+v.days+'\n';});
+  var filename = 'vouchers-'+Date.now()+'.csv';
+  if(window.AndroidNative && window.AndroidNative.saveText){
+    window.AndroidNative.saveText(filename, csv);
+    return;
+  }
   var blob=new Blob([csv],{type:'text/csv;charset=utf-8'});
   var a=document.createElement('a');
   a.href=URL.createObjectURL(blob);
-  a.download='vouchers-'+Date.now()+'.csv';
+  a.download=filename;
   a.click();
+}
+function exportCSV(){doExport();}
+function doPrint(){
+  if(window.AndroidNative && window.AndroidNative.printPage){
+    window.AndroidNative.printPage();
+    return;
+  }
+  window.print();
 }
 generate();
 </script>

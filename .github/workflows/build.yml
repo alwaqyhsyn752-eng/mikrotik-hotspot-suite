@@ -5,6 +5,9 @@ on:
     branches: [main]
   workflow_dispatch:
 
+permissions:
+  contents: write
+
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -16,24 +19,46 @@ jobs:
           distribution: 'temurin'
           java-version: '17'
 
-      - name: Setup Android SDK
-        uses: android-actions/setup-android@v3
+      - uses: android-actions/setup-android@v3
 
-      - name: Copy web assets into Android assets
+      - name: Install SDK 34
+        run: |
+          yes | sdkmanager "platforms;android-34" "build-tools;34.0.0" > /dev/null 2>&1 || true
+          sdkmanager --list_installed | head -30
+
+      - uses: gradle/actions/setup-gradle@v3
+        with:
+          gradle-version: '8.2'
+
+      - name: Copy web assets
         run: |
           mkdir -p android/app/src/main/assets/web
-          cp -r web/* android/app/src/main/assets/web/ || true
+          cp -r web/. android/app/src/main/assets/web/
+          ls android/app/src/main/assets/web/
 
-      - name: Build with Gradle
+      - name: Build Debug APK
         run: |
           cd android
-          chmod +x gradlew || true
-          gradle wrapper --gradle-version 8.2 || true
-          gradle assembleRelease --no-daemon || gradle assembleDebug --no-daemon
+          gradle assembleDebug --no-daemon --stacktrace
 
-      - name: Upload APK
+      - name: List APKs
+        run: find android/app/build/outputs -name "*.apk" -type f || echo "none"
+
+      - name: Upload Artifact
+        if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: app-apk
-          path: android/app/build/outputs/apk/**/*.apk
-          retention-days: 30
+          name: hotspot-suite-apk
+          path: android/app/build/outputs/apk/debug/*.apk
+          if-no-files-found: warn
+
+      - name: Create Release
+        if: success() && github.ref == 'refs/heads/main'
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: v${{ github.run_number }}
+          name: "Hotspot Suite v${{ github.run_number }}"
+          files: android/app/build/outputs/apk/debug/*.apk
+          generate_release_notes: true
+          draft: false
+          prerelease: false

@@ -99,17 +99,23 @@ function collectConfig(){
 
 function applyLive(){
   var cfg = collectConfig();
-  var css =
-    'body{background:'+cfg.brand.background+' !important}'+
-    ':root{--p:'+cfg.brand.primary+' !important;--primary:'+cfg.brand.primary+' !important}'+
-    '.brand h1{color:'+cfg.brand.primary+' !important}'+
-    'button{background:linear-gradient(135deg,'+cfg.brand.primary+',#0ea5e9) !important}';
-  var html =
-    '<html><head><style>'+css+'</style></head><body style="margin:0">'+
-    '<iframe style="width:100%;height:100vh;border:none" src="../../templates/'+cfg.template+'/index.html"></iframe>'+
-    '</body></html>';
-  var blob = new Blob([html],{type:'text/html;charset=utf-8'});
-  document.getElementById('previewFrame').src = URL.createObjectURL(blob);
+  var frame = document.getElementById('previewFrame');
+  frame.onload = function(){
+    try{
+      var doc = frame.contentDocument || frame.contentWindow.document;
+      var root = doc.documentElement;
+      root.style.setProperty('--p', cfg.brand.primary);
+      root.style.setProperty('--primary', cfg.brand.primary);
+      var h1 = doc.querySelector('h1');
+      if(h1 && cfg.brand.name) h1.textContent = cfg.brand.name;
+      var s = doc.createElement('style');
+      s.textContent = 'body{background:'+cfg.brand.background+' !important}'
+        +'button{background:linear-gradient(135deg,'+cfg.brand.primary+',#0ea5e9) !important;color:#020617 !important}'
+        +'input:focus{border-color:'+cfg.brand.primary+' !important}';
+      doc.head.appendChild(s);
+    }catch(e){console.error('preview inject:',e);}
+  };
+  frame.src = '../templates/'+cfg.template+'/index.html';
 }
 
 function downloadJSON(){

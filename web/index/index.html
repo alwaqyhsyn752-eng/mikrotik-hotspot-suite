@@ -172,7 +172,7 @@ body::before{
     return false;
   };
   function show(t,m){var b=document.getElementById('statusBox');b.className='status show '+(t==='error'?'error':'ok');b.textContent=m;}
-  fetch('/templates/shared/theme.json',{cache:'no-store'}).then(function(r){return r.ok?r.json():null;}).then(function(c){
+  fetch('../templates/shared/theme.json',{cache:'no-store'}).then(function(r){return r.ok?r.json():null;}).then(function(c){
     if(!c)return;
     if(c.brand&&c.brand.name){document.title='بوابة الدخول | '+c.brand.name;var h=document.querySelector('.brand h1');if(h)h.textContent=c.brand.name;}
     if(c.features){
