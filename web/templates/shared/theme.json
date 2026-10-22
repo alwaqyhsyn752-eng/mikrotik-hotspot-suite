@@ -1,0 +1,18 @@
+{
+  "brand": {
+    "name": "شبكة المستقبل",
+    "primary": "#22d3ee",
+    "background": "#020617"
+  },
+  "developer": {
+    "name": "حسين العولقي",
+    "phone": "738660998",
+    "signature": "تصميم وتطوير: حسين العولقي | هاتف: 738660998"
+  },
+  "features": {
+    "salafni": true,
+    "cardInquiry": true,
+    "appDownload": true,
+    "qrOnVoucher": true
+  }
+}
