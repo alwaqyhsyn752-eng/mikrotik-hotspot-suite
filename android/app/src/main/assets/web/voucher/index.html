@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>مولّد كروت الشحن</title>
+<style>
+:root{--bg:#020617;--card:#0b1220;--p:#22d3ee;--text:#e2e8f0;--muted:#94a3b8;--danger:#f87171}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:system-ui,sans-serif;background:var(--bg);color:var(--text);padding:20px;min-height:100vh}
+h1{text-align:center;margin-bottom:24px;text-shadow:0 0 14px rgba(34,211,238,.5);font-size:22px}
+.panel{max-width:1100px;margin:0 auto;display:grid;grid-template-columns:340px 1fr;gap:20px}
+@media(max-width:900px){.panel{grid-template-columns:1fr}}
+.controls{background:var(--card);border:1px solid rgba(34,211,238,.25);border-radius:16px;padding:20px}
+.controls label{display:block;font-size:12px;color:var(--muted);margin:10px 0 4px}
+.controls input,.controls select{width:100%;padding:10px;background:#020617;border:1px solid #334155;border-radius:8px;color:var(--text);font-family:inherit;font-size:13px}
+.controls input:focus{border-color:var(--p);outline:none}
+.btn{width:100%;padding:12px;margin-top:14px;border:none;border-radius:10px;background:linear-gradient(135deg,var(--p),#0ea5e9);color:#020617;font-weight:800;cursor:pointer;font-family:inherit;font-size:14px}
+.btn:hover{filter:brightness(1.1)}
+.btn.secondary{background:transparent;border:1px solid rgba(34,211,238,.4);color:var(--p)}
+.preview{background:var(--card);border:1px solid rgba(34,211,238,.25);border-radius:16px;padding:20px;overflow:auto}
+.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+@media(max-width:700px){.grid{grid-template-columns:repeat(2,1fr)}}
+.voucher{background:linear-gradient(135deg,#0f172a,#020617);border:1px solid var(--p);border-radius:12px;padding:14px;position:relative;overflow:hidden;box-shadow:0 0 20px rgba(34,211,238,.12)}
+.voucher::before{content:'';position:absolute;top:-50%;right:-50%;width:100%;height:100%;background:radial-gradient(circle,rgba(34,211,238,.15),transparent);pointer-events:none}
+.voucher .brand{font-size:11px;color:var(--p);font-weight:700;margin-bottom:6px;text-shadow:0 0 8px var(--p)}
+.voucher .code{font-family:monospace;font-size:18px;font-weight:900;letter-spacing:2px;margin:8px 0;color:#fff}
+.voucher .row{display:flex;justify-content:space-between;font-size:10px;color:var(--muted);margin-top:4px}
+.voucher .row span:last-child{color:var(--p);font-weight:600}
+.voucher .qr{width:44px;height:44px;background:#fff;border-radius:4px;position:absolute;bottom:10px;left:10px;display:flex;align-items:center;justify-content:center;font-size:8px;color:#000}
+.voucher .price{position:absolute;top:10px;left:10px;background:var(--p);color:#020617;padding:2px 8px;border-radius:6px;font-size:10px;font-weight:800}
+.sign{text-align:center;font-size:10px;color:var(--muted);margin-top:8px}
+.sign span{color:var(--p)}
+.stats{display:flex;gap:16px;justify-content:center;margin:14px 0;font-size:12px;color:var(--muted)}
+.stats b{color:var(--p)}
+</style>
+</head>
+<body>
+<h1>مولّد كروت الشحن</h1>
+<div class="panel">
+  <div class="controls">
+    <label>اسم الشبكة</label>
+    <input id="netName" value="شبكة المستقبل">
+    <label>رقم هاتف المالك</label>
+    <input id="phone" value="738660998">
+    <label>عدد الكروت</label>
+    <input id="count" type="number" value="12" min="1" max="60">
+    <label>السعر (ريال)</label>
+    <input id="price" type="number" value="500" min="0">
+    <label>الباقة (جيجابايت)</label>
+    <input id="gb" type="number" value="5" min="0" step="0.5">
+    <label>الصلاحية (أيام)</label>
+    <input id="days" type="number" value="7" min="1">
+    <label>لون التمييز</label>
+    <input id="color" type="color" value="#22d3ee">
+    <button class="btn" onclick="generate()">توليد الكروت</button>
+    <button class="btn secondary" onclick="doPrint()">طباعة / حفظ PDF</button>
+    <button class="btn secondary" onclick="doExport()">تصدير CSV</button>
+  </div>
+  <div class="preview">
+    <div class="stats" id="stats"></div>
+    <div class="grid" id="grid"></div>
+    <div class="sign">تصميم وتطوير: <span>حسين العولقي</span> | هاتف: <span>738660998</span></div>
+  </div>
+</div>
+<script>
+var vouchers = [];
+function genCode(){
+  var chars='ABCDEFGHJKMNPQRSTUVWXYZ23456789';
+  var s='';
+  for(var i=0;i<8;i++){s+=chars[Math.floor(Math.random()*chars.length)];if(i===3)s+='-';}
+  return s;
+}
+function generate(){
+  var n=parseInt(document.getElementById('count').value,10)||12;
+  var net=document.getElementById('netName').value||'شبكة';
+  var ph=document.getElementById('phone').value||'';
+  var price=document.getElementById('price').value||'0';
+  var gb=document.getElementById('gb').value||'0';
+  var days=document.getElementById('days').value||'0';
+  var color=document.getElementById('color').value||'#22d3ee';
+  document.documentElement.style.setProperty('--p',color);
+  vouchers=[];
+  var grid=document.getElementById('grid');
+  grid.innerHTML='';
+  var seen={};
+  for(var i=0;i<n;i++){
+    var code;
+    do{code=genCode();}while(seen[code]);
+    seen[code]=1;
+    vouchers.push({code:code,net:net,price:price,gb:gb,days:days});
+    var div=document.createElement('div');
+    div.className='voucher';
+    div.innerHTML=
+      '<div class="price">'+price+'</div>'+
+      '<div class="brand">'+net+'</div>'+
+      '<div class="code">'+code+'</div>'+
+      '<div class="row"><span>البيانات</span><span>'+gb+' GB</span></div>'+
+      '<div class="row"><span>الصلاحية</span><span>'+days+' يوم</span></div>'+
+      '<div class="row"><span>الهاتف</span><span>'+ph+'</span></div>'+
+      '<div class="qr">QR</div>';
+    grid.appendChild(div);
+  }
+  document.getElementById('stats').innerHTML=
+    'إجمالي: <b>'+n+'</b> كرت | قيمة: <b>'+(n*parseFloat(price))+'</b> ريال';
+}
+function doExport(){
+  if(!vouchers.length){alert('ولّد الكروت أولاً');return;}
+  var csv='code,network,price,gb,days\n';
+  vouchers.forEach(function(v){csv+=v.code+','+v.net+','+v.price+','+v.gb+','+v.days+'\n';});
+  var filename = 'vouchers-'+Date.now()+'.csv';
+  if(window.AndroidNative && window.AndroidNative.saveText){
+    window.AndroidNative.saveText(filename, csv);
+    return;
+  }
+  var blob=new Blob([csv],{type:'text/csv;charset=utf-8'});
+  var a=document.createElement('a');
+  a.href=URL.createObjectURL(blob);
+  a.download=filename;
+  a.click();
+}
+function exportCSV(){doExport();}
+function doPrint(){
+  if(window.AndroidNative && window.AndroidNative.printPage){
+    window.AndroidNative.printPage();
+    return;
+  }
+  window.print();
+}
+generate();
+</script>
+</body>
+</html>

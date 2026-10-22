@@ -46,7 +46,6 @@ public class MainActivity extends AppCompatActivity {
         s.setUseWideViewPort(true);
         s.setBuiltInZoomControls(false);
         s.setDisplayZoomControls(false);
-        s.setMediaPlaybackRequiresUserGesture(false);
         s.setMixedContentMode(WebSettings.MIXED_CONTENT_COMPATIBILITY_MODE);
 
         CookieManager cm = CookieManager.getInstance();
@@ -74,7 +73,7 @@ public class MainActivity extends AppCompatActivity {
                     Toast.makeText(MainActivity.this, "بدء التحميل", Toast.LENGTH_SHORT).show();
                 } catch (Exception e) {
                     Toast.makeText(MainActivity.this,
-                        "تعذر التحميل: " + e.getMessage(), Toast.LENGTH_LONG).show();
+                        "تعذر التحميل", Toast.LENGTH_LONG).show();
                 }
             }
         });

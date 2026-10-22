@@ -21,27 +21,26 @@ jobs:
 
       - name: Setup Android SDK
         uses: android-actions/setup-android@v4
-        with:
-          packages: 'platform-tools'
 
-      - uses: gradle/actions/setup-gradle@v3
-        with:
-          gradle-version: '8.2'
+      - name: Accept licenses and install SDK 34
+        run: |
+          yes | sdkmanager --licenses > /dev/null 2>&1 || true
+          sdkmanager "platforms;android-34" "build-tools;34.0.0" "platform-tools"
+          echo "SDK ready"
 
       - name: Copy web assets
         run: |
           mkdir -p android/app/src/main/assets/web
-          cp -r web/. android/app/src/main/assets/web/ || echo "WARN: web/ empty"
+          cp -r web/. android/app/src/main/assets/web/ || echo "WARN: web empty"
+          ls android/app/src/main/assets/web/ | head
 
       - name: Build Debug APK
         run: |
           cd android
-          gradle assembleDebug --no-daemon --stacktrace
-
-      - name: List APKs
-        run: find android/app/build/outputs -name "*.apk" -type f || echo "none"
+          gradle assembleDebug --no-daemon --stacktrace 2>&1 | tail -60
 
       - name: Upload Artifact
+        if: always()
         uses: actions/upload-artifact@v4
         with:
           name: hotspot-suite-apk
@@ -56,5 +55,3 @@ jobs:
           name: "Hotspot Suite v${{ github.run_number }}"
           files: android/app/build/outputs/apk/debug/*.apk
           generate_release_notes: true
-          draft: false
-          prerelease: false
