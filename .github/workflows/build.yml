@@ -1,45 +1,22 @@
-name: Build APK
-on:
-  push:
-    branches: [main]
-  workflow_dispatch:
-permissions:
-  contents: write
+name: Build
+on: [push, workflow_dispatch]
+permissions: {contents: write}
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-java@v4
-        with:
-          distribution: 'temurin'
-          java-version: '17'
-      - uses: android-actions/setup-android@v4
-      - name: Install SDK
-        run: |
-          yes | sdkmanager --licenses > /dev/null 2>&1 || true
-          sdkmanager "platforms;android-34" "build-tools;34.0.0" "platform-tools"
-      - uses: gradle/actions/setup-gradle@v3
-        with:
-          gradle-version: '8.2'
-      - name: Copy web assets
-        run: |
-          mkdir -p android/app/src/main/assets/web
-          cp -r web/. android/app/src/main/assets/web/
-      - name: Build
-        run: cd android && gradle assembleDebug --no-daemon --stacktrace
-      - name: Verify
-        run: test -f android/app/build/outputs/apk/debug/app-debug.apk
-      - uses: actions/upload-artifact@v4
-        with:
-          name: hotspot-suite-apk
-          path: android/app/build/outputs/apk/debug/app-debug.apk
-          if-no-files-found: error
-      - uses: softprops/action-gh-release@v2
-        if: success()
-        with:
-          tag_name: v${{ github.run_number }}
-          name: "Hotspot v${{ github.run_number }}"
-          files: android/app/build/outputs/apk/debug/app-debug.apk
-          fail_on_unmatched_files: true
-          generate_release_notes: true
+    - uses: actions/checkout@v4
+    - uses: actions/setup-java@v4
+      with: {distribution: temurin, java-version: "17"}
+    - uses: android-actions/setup-android@v4
+    - run: sdkmanager "platforms;android-34" "build-tools;34.0.0"
+    - uses: gradle/actions/setup-gradle@v3
+      with: {gradle-version: "8.2"}
+    - run: mkdir -p android/app/src/main/assets/web && cp -r web/. android/app/src/main/assets/web/
+    - run: cd android && gradle assembleDebug --no-daemon
+    - run: test -f android/app/build/outputs/apk/debug/app-debug.apk
+    - uses: actions/upload-artifact@v4
+      with: {name: apk, path: android/app/build/outputs/apk/debug/app-debug.apk}
+    - uses: softprops/action-gh-release@v2
+      if: success()
+      with: {tag_name: "v${{ github.run_number }}", files: android/app/build/outputs/apk/debug/app-debug.apk}

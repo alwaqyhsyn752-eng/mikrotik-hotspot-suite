@@ -1,11 +1,6 @@
 *.apk
-*.aab
-.gradle/
 build/
+.gradle/
 local.properties
 .env
-.gh_token
-*.keystore
-*.jks
 __pycache__/
-.DS_Store

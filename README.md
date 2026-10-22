@@ -1,14 +1,5 @@
-# MikroTik Hotspot & Voucher Suite
+# MikroTik Hotspot Suite
 
-20 قالب تسجيل دخول ثلاثي الأبعاد مع رسومات متحركة وشعارات.
+100 قالب + 100 كرت + محرر + APK.
 
-## الصفحات
-- web/index/index.html — نقطة دخول موحدة
-- web/templates/login_01..20/ — 20 قالب فريد
-- web/templates/card_inquiry/ — استعلام
-- web/voucher/ — مولّد كروت
-- web/editor/ — محرر بصري
-- web/app/ — تحميل التطبيق
-
-## المطور
 تصميم وتطوير: حسين العولقي | هاتف: 738660998
