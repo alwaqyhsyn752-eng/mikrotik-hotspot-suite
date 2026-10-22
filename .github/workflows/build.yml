@@ -22,30 +22,43 @@ jobs:
       - name: Setup Android SDK
         uses: android-actions/setup-android@v4
 
-      - name: Accept licenses and install SDK 34
+      - name: Install SDK packages
         run: |
           yes | sdkmanager --licenses > /dev/null 2>&1 || true
           sdkmanager "platforms;android-34" "build-tools;34.0.0" "platform-tools"
-          echo "SDK ready"
+
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v3
+        with:
+          gradle-version: '8.2'
+
+      - name: Verify Gradle
+        run: gradle --version
 
       - name: Copy web assets
         run: |
           mkdir -p android/app/src/main/assets/web
-          cp -r web/. android/app/src/main/assets/web/ || echo "WARN: web empty"
+          cp -r web/. android/app/src/main/assets/web/
           ls android/app/src/main/assets/web/ | head
 
       - name: Build Debug APK
         run: |
           cd android
-          gradle assembleDebug --no-daemon --stacktrace 2>&1 | tail -60
+          gradle assembleDebug --no-daemon --stacktrace
 
-      - name: Upload Artifact
-        if: always()
+      - name: Verify APK exists
+        run: |
+          echo "=== APK files ==="
+          find android/app/build/outputs -name "*.apk" -type f
+          test -f android/app/build/outputs/apk/debug/app-debug.apk
+          echo "APK OK"
+
+      - name: Upload APK Artifact
         uses: actions/upload-artifact@v4
         with:
           name: hotspot-suite-apk
-          path: android/app/build/outputs/apk/debug/*.apk
-          if-no-files-found: warn
+          path: android/app/build/outputs/apk/debug/app-debug.apk
+          if-no-files-found: error
 
       - name: Create Release
         if: success() && github.ref == 'refs/heads/main'
@@ -53,5 +66,6 @@ jobs:
         with:
           tag_name: v${{ github.run_number }}
           name: "Hotspot Suite v${{ github.run_number }}"
-          files: android/app/build/outputs/apk/debug/*.apk
+          files: android/app/build/outputs/apk/debug/app-debug.apk
+          fail_on_unmatched_files: true
           generate_release_notes: true
