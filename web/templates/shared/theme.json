@@ -5,8 +5,7 @@
     "background": "#020617",
     "surface": "#0b1220",
     "text": "#e2e8f0",
-    "muted": "#94a3b8",
-    "radius": "20px"
+    "muted": "#94a3b8"
   },
   "developer": {
     "name": "حسين العولقي",
@@ -18,5 +17,27 @@
     "cardInquiry": true,
     "appDownload": true,
     "qrOnVoucher": true
-  }
+  },
+  "templates": [
+    "login_01",
+    "login_02",
+    "login_03",
+    "login_04",
+    "login_05",
+    "login_06",
+    "login_07",
+    "login_08",
+    "login_09",
+    "login_10",
+    "login_11",
+    "login_12",
+    "login_13",
+    "login_14",
+    "login_15",
+    "login_16",
+    "login_17",
+    "login_18",
+    "login_19",
+    "login_20"
+  ]
 }

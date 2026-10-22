@@ -1,46 +1,42 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
 <title>استعلام عن كرت</title>
 <style>
-:root{--bg:#020617;--card:#0b1220;--p:#22d3ee;--text:#e2e8f0;--muted:#94a3b8}
 *{box-sizing:border-box;margin:0;padding:0}
-body{font-family:system-ui,sans-serif;background:radial-gradient(circle at 50% 0%,#0f172a,var(--bg) 70%);color:var(--text);min-height:100vh;display:flex;align-items:center;justify-content:center;padding:24px}
-.card{width:100%;max-width:420px;background:var(--card);border:1px solid rgba(34,211,238,.3);border-radius:20px;padding:28px;box-shadow:0 0 30px rgba(34,211,238,.12)}
-h2{text-align:center;font-size:19px;margin-bottom:18px;text-shadow:0 0 14px rgba(34,211,238,.5)}
-input{width:100%;padding:13px;background:#020617;border:1px solid #334155;border-radius:10px;color:var(--text);margin-bottom:12px;outline:none;font-family:inherit;font-size:14px}
-input:focus{border-color:var(--p);box-shadow:0 0 0 3px rgba(34,211,238,.15)}
-button{width:100%;padding:13px;border:none;border-radius:10px;font-weight:700;background:linear-gradient(135deg,#22d3ee,#0ea5e9);color:#020617;cursor:pointer;font-family:inherit;font-size:14px}
-button:hover{filter:brightness(1.08)}
-.result{margin-top:16px;padding:14px;border-radius:11px;background:rgba(34,211,238,.08);border:1px solid rgba(34,211,238,.25);font-size:13px;display:none;line-height:1.8}
+body{font-family:system-ui,sans-serif;background:radial-gradient(circle at 50% 0%,#0f172a,#020617 70%);color:#e2e8f0;min-height:100vh;display:flex;align-items:center;justify-content:center;padding:24px}
+.card{width:100%;max-width:420px;background:#0b1220;border:1px solid rgba(34,211,238,.4);border-radius:20px;padding:28px;box-shadow:0 0 40px rgba(34,211,238,.15)}
+h2{text-align:center;font-size:20px;margin-bottom:20px;text-shadow:0 0 15px #22d3ee}
+input{width:100%;padding:14px;background:#020617;border:1px solid #334155;border-radius:10px;color:#e2e8f0;margin-bottom:12px;outline:none;font-family:inherit}
+input:focus{border-color:#22d3ee;box-shadow:0 0 0 3px rgba(34,211,238,.2)}
+button{width:100%;padding:14px;border:none;border-radius:10px;background:linear-gradient(135deg,#22d3ee,#0891b2);color:#020617;font-weight:800;cursor:pointer;font-family:inherit}
+.result{margin-top:16px;padding:14px;border-radius:10px;background:rgba(34,211,238,.08);border:1px solid rgba(34,211,238,.3);font-size:13px;display:none;line-height:2}
 .result.show{display:block}
-.result .row{display:flex;justify-content:space-between;padding:4px 0;border-bottom:1px dashed rgba(148,163,184,.15)}
-.result .row:last-child{border:none}
-.result .label{color:var(--muted)}
-.result .val{color:var(--p);font-weight:600}
-.dev{margin-top:22px;text-align:center;font-size:11px;color:var(--muted);border-top:1px solid rgba(148,163,184,.12);padding-top:14px}
-.dev span{color:var(--p)}
+.row{display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px dashed rgba(148,163,184,.2)}
+.row:last-child{border:none}
+.lbl{color:#94a3b8} .val{color:#22d3ee;font-weight:700}
+.dev{margin-top:22px;text-align:center;font-size:11px;color:#94a3b8;border-top:1px solid rgba(148,163,184,.12);padding-top:14px}
+.dev span{color:#22d3ee;font-weight:600}
 </style>
 </head>
 <body>
 <div class="card">
-  <h2>استعلام عن كرت</h2>
-  <input id="voucher" type="text" placeholder="أدخل رقم الكرت" autocomplete="off" maxlength="64">
-  <button onclick="inquiry()">استعلام</button>
-  <div class="result" id="result"></div>
-  <div class="dev">تصميم وتطوير: <span>حسين العولقي</span> | هاتف: <span>738660998</span></div>
+<h2>استعلام عن كرت</h2>
+<input id="v" type="text" placeholder="أدخل رقم الكرت" maxlength="64">
+<button onclick="inq()">استعلام</button>
+<div class="result" id="r"></div>
+<div class="dev">تصميم وتطوير: <span>حسين العولقي</span> | هاتف: <span>738660998</span></div>
 </div>
 <script>
-function inquiry(){
-  var v=document.getElementById('voucher').value.trim();
+function inq(){
+  var v=document.getElementById('v').value.trim();
   if(!v){alert('أدخل رقم الكرت');return;}
-  var r=document.getElementById('result');
-  r.innerHTML='<div class="row"><span class="label">رقم الكرت</span><span class="val">'+v+'</span></div>'+
-              '<div class="row"><span class="label">الحالة</span><span class="val">صالح</span></div>'+
-              '<div class="row"><span class="label">البيانات المتبقية</span><span class="val">2.4 GB</span></div>'+
-              '<div class="row"><span class="label">الأيام المتبقية</span><span class="val">5 أيام</span></div>';
+  var r=document.getElementById('r');
+  r.innerHTML='<div class="row"><span class="lbl">الكرت</span><span class="val">'+v+'</span></div>'+
+              '<div class="row"><span class="lbl">الحالة</span><span class="val">صالح</span></div>'+
+              '<div class="row"><span class="lbl">المتبقي</span><span class="val">2.4 GB</span></div>'+
+              '<div class="row"><span class="lbl">الأيام</span><span class="val">5</span></div>';
   r.classList.add('show');
 }
 </script>

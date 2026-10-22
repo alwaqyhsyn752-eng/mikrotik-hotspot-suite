@@ -1,133 +1,91 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
 <title>مولّد كروت الشحن</title>
 <style>
-:root{--bg:#020617;--card:#0b1220;--p:#22d3ee;--text:#e2e8f0;--muted:#94a3b8;--danger:#f87171}
 *{box-sizing:border-box;margin:0;padding:0}
-body{font-family:system-ui,sans-serif;background:var(--bg);color:var(--text);padding:20px;min-height:100vh}
-h1{text-align:center;margin-bottom:24px;text-shadow:0 0 14px rgba(34,211,238,.5);font-size:22px}
-.panel{max-width:1100px;margin:0 auto;display:grid;grid-template-columns:340px 1fr;gap:20px}
-@media(max-width:900px){.panel{grid-template-columns:1fr}}
-.controls{background:var(--card);border:1px solid rgba(34,211,238,.25);border-radius:16px;padding:20px}
-.controls label{display:block;font-size:12px;color:var(--muted);margin:10px 0 4px}
-.controls input,.controls select{width:100%;padding:10px;background:#020617;border:1px solid #334155;border-radius:8px;color:var(--text);font-family:inherit;font-size:13px}
-.controls input:focus{border-color:var(--p);outline:none}
-.btn{width:100%;padding:12px;margin-top:14px;border:none;border-radius:10px;background:linear-gradient(135deg,var(--p),#0ea5e9);color:#020617;font-weight:800;cursor:pointer;font-family:inherit;font-size:14px}
-.btn:hover{filter:brightness(1.1)}
-.btn.secondary{background:transparent;border:1px solid rgba(34,211,238,.4);color:var(--p)}
-.preview{background:var(--card);border:1px solid rgba(34,211,238,.25);border-radius:16px;padding:20px;overflow:auto}
+body{font-family:system-ui,sans-serif;background:#020617;color:#e2e8f0;padding:20px;min-height:100vh}
+h1{text-align:center;margin-bottom:20px;font-size:22px;text-shadow:0 0 15px #22d3ee}
+.wrap{max-width:1200px;margin:0 auto;display:grid;grid-template-columns:320px 1fr;gap:20px}
+@media(max-width:900px){.wrap{grid-template-columns:1fr}}
+.panel{background:#0b1220;border:1px solid rgba(34,211,238,.3);border-radius:16px;padding:20px}
+label{display:block;font-size:12px;color:#94a3b8;margin:10px 0 4px}
+input{width:100%;padding:10px;background:#020617;border:1px solid #334155;border-radius:8px;color:#e2e8f0;font-family:inherit;font-size:13px}
+.btn{width:100%;padding:12px;margin-top:12px;border:none;border-radius:10px;background:linear-gradient(135deg,#22d3ee,#0891b2);color:#020617;font-weight:800;cursor:pointer;font-size:14px}
+.btn.sec{background:transparent;border:1px solid rgba(34,211,238,.4);color:#22d3ee}
 .grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
 @media(max-width:700px){.grid{grid-template-columns:repeat(2,1fr)}}
-.voucher{background:linear-gradient(135deg,#0f172a,#020617);border:1px solid var(--p);border-radius:12px;padding:14px;position:relative;overflow:hidden;box-shadow:0 0 20px rgba(34,211,238,.12)}
-.voucher::before{content:'';position:absolute;top:-50%;right:-50%;width:100%;height:100%;background:radial-gradient(circle,rgba(34,211,238,.15),transparent);pointer-events:none}
-.voucher .brand{font-size:11px;color:var(--p);font-weight:700;margin-bottom:6px;text-shadow:0 0 8px var(--p)}
-.voucher .code{font-family:monospace;font-size:18px;font-weight:900;letter-spacing:2px;margin:8px 0;color:#fff}
-.voucher .row{display:flex;justify-content:space-between;font-size:10px;color:var(--muted);margin-top:4px}
-.voucher .row span:last-child{color:var(--p);font-weight:600}
-.voucher .qr{width:44px;height:44px;background:#fff;border-radius:4px;position:absolute;bottom:10px;left:10px;display:flex;align-items:center;justify-content:center;font-size:8px;color:#000}
-.voucher .price{position:absolute;top:10px;left:10px;background:var(--p);color:#020617;padding:2px 8px;border-radius:6px;font-size:10px;font-weight:800}
-.sign{text-align:center;font-size:10px;color:var(--muted);margin-top:8px}
-.sign span{color:var(--p)}
-.stats{display:flex;gap:16px;justify-content:center;margin:14px 0;font-size:12px;color:var(--muted)}
-.stats b{color:var(--p)}
+.voucher{background:linear-gradient(135deg,#0f172a,#020617);border:1px solid #22d3ee;border-radius:12px;padding:16px;position:relative;min-height:120px;display:flex;flex-direction:column;justify-content:space-between;box-shadow:0 0 20px rgba(34,211,238,.15)}
+.voucher .price{position:absolute;top:8px;left:8px;background:#22d3ee;color:#020617;padding:2px 8px;border-radius:6px;font-size:10px;font-weight:800}
+.voucher .brand{font-size:11px;color:#22d3ee;font-weight:700;margin-bottom:8px}
+.voucher .code{font-family:monospace;font-size:16px;font-weight:900;letter-spacing:2px;color:#fff;margin:6px 0}
+.voucher .meta{display:flex;justify-content:space-between;font-size:9px;color:#94a3b8;margin-top:4px}
+.voucher .meta span:last-child{color:#22d3ee;font-weight:600}
+.voucher .qr{width:36px;height:36px;background:#fff;color:#000;border-radius:4px;position:absolute;bottom:8px;left:8px;font-size:7px;display:flex;align-items:center;justify-content:center;text-align:center}
+.dev{text-align:center;font-size:11px;color:#94a3b8;margin-top:8px}
+.dev span{color:#22d3ee}
 </style>
 </head>
 <body>
 <h1>مولّد كروت الشحن</h1>
+<div class="wrap">
 <div class="panel">
-  <div class="controls">
-    <label>اسم الشبكة</label>
-    <input id="netName" value="شبكة المستقبل">
-    <label>رقم هاتف المالك</label>
-    <input id="phone" value="738660998">
-    <label>عدد الكروت</label>
-    <input id="count" type="number" value="12" min="1" max="60">
-    <label>السعر (ريال)</label>
-    <input id="price" type="number" value="500" min="0">
-    <label>الباقة (جيجابايت)</label>
-    <input id="gb" type="number" value="5" min="0" step="0.5">
-    <label>الصلاحية (أيام)</label>
-    <input id="days" type="number" value="7" min="1">
-    <label>لون التمييز</label>
-    <input id="color" type="color" value="#22d3ee">
-    <button class="btn" onclick="generate()">توليد الكروت</button>
-    <button class="btn secondary" onclick="doPrint()">طباعة / حفظ PDF</button>
-    <button class="btn secondary" onclick="doExport()">تصدير CSV</button>
-  </div>
-  <div class="preview">
-    <div class="stats" id="stats"></div>
-    <div class="grid" id="grid"></div>
-    <div class="sign">تصميم وتطوير: <span>حسين العولقي</span> | هاتف: <span>738660998</span></div>
-  </div>
+<label>اسم الشبكة</label><input id="net" value="شبكة المستقبل">
+<label>هاتف المالك</label><input id="ph" value="738660998">
+<label>عدد الكروت</label><input id="cnt" type="number" value="12" min="1" max="60">
+<label>السعر</label><input id="pr" type="number" value="500">
+<label>جيجابايت</label><input id="gb" type="number" value="5" step="0.5">
+<label>الأيام</label><input id="dy" type="number" value="7">
+<label>اللون</label><input id="col" type="color" value="#22d3ee">
+<button class="btn" onclick="gen()">توليد</button>
+<button class="btn sec" onclick="doPrint()">طباعة / PDF</button>
+<button class="btn sec" onclick="doExport()">تصدير CSV</button>
+</div>
+<div>
+<div class="grid" id="g"></div>
+<div class="dev">تصميم وتطوير: <span>حسين العولقي</span> | هاتف: <span>738660998</span></div>
+</div>
 </div>
 <script>
-var vouchers = [];
-function genCode(){
-  var chars='ABCDEFGHJKMNPQRSTUVWXYZ23456789';
-  var s='';
-  for(var i=0;i<8;i++){s+=chars[Math.floor(Math.random()*chars.length)];if(i===3)s+='-';}
-  return s;
-}
-function generate(){
-  var n=parseInt(document.getElementById('count').value,10)||12;
-  var net=document.getElementById('netName').value||'شبكة';
-  var ph=document.getElementById('phone').value||'';
-  var price=document.getElementById('price').value||'0';
-  var gb=document.getElementById('gb').value||'0';
-  var days=document.getElementById('days').value||'0';
-  var color=document.getElementById('color').value||'#22d3ee';
-  document.documentElement.style.setProperty('--p',color);
-  vouchers=[];
-  var grid=document.getElementById('grid');
-  grid.innerHTML='';
+var VS = [];
+function code(){var c='ABCDEFGHJKMNPQRSTUVWXYZ23456789',s='';for(var i=0;i<8;i++){s+=c[Math.floor(Math.random()*c.length)];if(i===3)s+='-';}return s;}
+function gen(){
+  var n=parseInt(document.getElementById('cnt').value,10)||12;
+  var net=document.getElementById('net').value, ph=document.getElementById('ph').value;
+  var pr=document.getElementById('pr').value, gb=document.getElementById('gb').value, dy=document.getElementById('dy').value;
+  var col=document.getElementById('col').value;
+  document.documentElement.style.setProperty('--acc', col);
+  document.querySelectorAll('.voucher').forEach(function(v){v.style.borderColor=col;});
+  var g=document.getElementById('g'); g.innerHTML=''; VS=[];
   var seen={};
   for(var i=0;i<n;i++){
-    var code;
-    do{code=genCode();}while(seen[code]);
-    seen[code]=1;
-    vouchers.push({code:code,net:net,price:price,gb:gb,days:days});
-    var div=document.createElement('div');
-    div.className='voucher';
-    div.innerHTML=
-      '<div class="price">'+price+'</div>'+
+    var k; do{k=code();}while(seen[k]); seen[k]=1;
+    VS.push({c:k,n:net,p:pr,g:gb,d:dy});
+    var d=document.createElement('div'); d.className='voucher';
+    d.style.borderColor=col;
+    d.innerHTML='<div class="price">'+pr+'</div>'+
       '<div class="brand">'+net+'</div>'+
-      '<div class="code">'+code+'</div>'+
-      '<div class="row"><span>البيانات</span><span>'+gb+' GB</span></div>'+
-      '<div class="row"><span>الصلاحية</span><span>'+days+' يوم</span></div>'+
-      '<div class="row"><span>الهاتف</span><span>'+ph+'</span></div>'+
+      '<div class="code">'+k+'</div>'+
+      '<div class="meta"><span>'+gb+' GB</span><span>'+dy+' يوم</span></div>'+
       '<div class="qr">QR</div>';
-    grid.appendChild(div);
+    g.appendChild(d);
   }
-  document.getElementById('stats').innerHTML=
-    'إجمالي: <b>'+n+'</b> كرت | قيمة: <b>'+(n*parseFloat(price))+'</b> ريال';
 }
-function doExport(){
-  if(!vouchers.length){alert('ولّد الكروت أولاً');return;}
-  var csv='code,network,price,gb,days\n';
-  vouchers.forEach(function(v){csv+=v.code+','+v.net+','+v.price+','+v.gb+','+v.days+'\n';});
-  var filename = 'vouchers-'+Date.now()+'.csv';
-  if(window.AndroidNative && window.AndroidNative.saveText){
-    window.AndroidNative.saveText(filename, csv);
-    return;
-  }
-  var blob=new Blob([csv],{type:'text/csv;charset=utf-8'});
-  var a=document.createElement('a');
-  a.href=URL.createObjectURL(blob);
-  a.download=filename;
-  a.click();
-}
-function exportCSV(){doExport();}
 function doPrint(){
-  if(window.AndroidNative && window.AndroidNative.printPage){
-    window.AndroidNative.printPage();
-    return;
-  }
+  if(window.AndroidNative && window.AndroidNative.printPage){window.AndroidNative.printPage();return;}
   window.print();
 }
-generate();
+function doExport(){
+  if(!VS.length){alert('ولّد الكروت');return;}
+  var csv='code,network,price,gb,days\n';
+  VS.forEach(function(v){csv+=v.c+','+v.n+','+v.p+','+v.g+','+v.d+'\n';});
+  var fn='vouchers-'+Date.now()+'.csv';
+  if(window.AndroidNative && window.AndroidNative.saveText){window.AndroidNative.saveText(fn,csv);return;}
+  var b=new Blob([csv],{type:'text/csv;charset=utf-8'});
+  var a=document.createElement('a'); a.href=URL.createObjectURL(b); a.download=fn; a.click();
+}
+gen();
 </script>
 </body>
 </html>

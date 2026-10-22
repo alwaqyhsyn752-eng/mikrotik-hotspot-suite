@@ -23,17 +23,14 @@ import java.io.FileOutputStream;
 import java.nio.charset.StandardCharsets;
 
 public class MainActivity extends AppCompatActivity {
-
     private WebView webView;
 
     @SuppressLint("SetJavaScriptEnabled")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         webView = new WebView(this);
         setContentView(webView);
-
         WebSettings s = webView.getSettings();
         s.setJavaScriptEnabled(true);
         s.setDomStorageEnabled(true);
@@ -47,86 +44,56 @@ public class MainActivity extends AppCompatActivity {
         s.setBuiltInZoomControls(false);
         s.setDisplayZoomControls(false);
         s.setMixedContentMode(WebSettings.MIXED_CONTENT_COMPATIBILITY_MODE);
-
         CookieManager cm = CookieManager.getInstance();
         cm.setAcceptCookie(true);
         cm.setAcceptThirdPartyCookies(webView, true);
-
         webView.setWebChromeClient(new WebChromeClient());
         webView.setWebViewClient(new WebViewClient());
         webView.addJavascriptInterface(new JsBridge(), "AndroidNative");
-
         webView.setDownloadListener(new DownloadListener() {
-            @Override
-            public void onDownloadStart(String url, String userAgent,
-                                        String contentDisposition,
-                                        String mimetype, long contentLength) {
+            @Override public void onDownloadStart(String url, String ua, String cd, String mt, long cl) {
                 try {
-                    DownloadManager.Request req = new DownloadManager.Request(Uri.parse(url));
-                    req.setNotificationVisibility(
-                        DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED);
-                    req.setDestinationInExternalPublicDir(
-                        Environment.DIRECTORY_DOWNLOADS,
-                        "hotspot_" + System.currentTimeMillis());
+                    DownloadManager.Request r = new DownloadManager.Request(Uri.parse(url));
+                    r.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED);
+                    r.setDestinationInExternalPublicDir(Environment.DIRECTORY_DOWNLOADS, "hotspot_" + System.currentTimeMillis());
                     DownloadManager dm = (DownloadManager) getSystemService(Context.DOWNLOAD_SERVICE);
-                    if (dm != null) dm.enqueue(req);
+                    if (dm != null) dm.enqueue(r);
                     Toast.makeText(MainActivity.this, "بدء التحميل", Toast.LENGTH_SHORT).show();
                 } catch (Exception e) {
-                    Toast.makeText(MainActivity.this,
-                        "تعذر التحميل", Toast.LENGTH_LONG).show();
+                    Toast.makeText(MainActivity.this, "فشل: " + e.getMessage(), Toast.LENGTH_LONG).show();
                 }
             }
         });
-
         webView.loadUrl("file:///android_asset/web/index/index.html");
     }
 
     public class JsBridge {
-        @JavascriptInterface
-        public void saveText(String filename, String content) {
+        @JavascriptInterface public void saveText(String fn, String c) {
             try {
                 File dir = getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS);
                 if (dir == null) dir = getFilesDir();
                 if (!dir.exists()) dir.mkdirs();
-                File f = new File(dir, filename);
+                File f = new File(dir, fn);
                 FileOutputStream fos = new FileOutputStream(f);
-                fos.write(content.getBytes(StandardCharsets.UTF_8));
+                fos.write(c.getBytes(StandardCharsets.UTF_8));
                 fos.close();
-                Toast.makeText(MainActivity.this,
-                    "حُفظ: " + f.getName(), Toast.LENGTH_LONG).show();
+                Toast.makeText(MainActivity.this, "حُفظ: " + f.getName(), Toast.LENGTH_LONG).show();
             } catch (Exception e) {
-                Toast.makeText(MainActivity.this,
-                    "فشل: " + e.getMessage(), Toast.LENGTH_LONG).show();
+                Toast.makeText(MainActivity.this, "فشل: " + e.getMessage(), Toast.LENGTH_LONG).show();
             }
         }
-
-        @JavascriptInterface
-        public void printPage() {
-            runOnUiThread(new Runnable() {
-                @Override public void run() {
-                    PrintManager pm = (PrintManager) getSystemService(Context.PRINT_SERVICE);
-                    PrintDocumentAdapter adapter =
-                        webView.createPrintDocumentAdapter("HotspotPage");
-                    if (pm != null) {
-                        pm.print("HotspotPage", adapter,
-                            new PrintAttributes.Builder().build());
-                    }
-                }
-            });
+        @JavascriptInterface public void printPage() {
+            runOnUiThread(new Runnable() { public void run() {
+                PrintManager pm = (PrintManager) getSystemService(Context.PRINT_SERVICE);
+                PrintDocumentAdapter ad = webView.createPrintDocumentAdapter("HotspotPage");
+                if (pm != null) pm.print("HotspotPage", ad, new PrintAttributes.Builder().build());
+            }});
         }
-
-        @JavascriptInterface
-        public String platform() {
-            return "android";
-        }
+        @JavascriptInterface public String platform() { return "android"; }
     }
 
-    @Override
-    public void onBackPressed() {
-        if (webView != null && webView.canGoBack()) {
-            webView.goBack();
-        } else {
-            super.onBackPressed();
-        }
+    @Override public void onBackPressed() {
+        if (webView != null && webView.canGoBack()) webView.goBack();
+        else super.onBackPressed();
     }
 }

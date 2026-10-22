@@ -1,16 +1,14 @@
 # MikroTik Hotspot & Voucher Suite
 
-نظام متكامل لإدارة شبكات الميكروتيك (Hotspot + Voucher).
+20 قالب تسجيل دخول ثلاثي الأبعاد مع رسومات متحركة وشعارات.
 
-## المكونات
-- 20 قالب تسجيل دخول futuristic (Crystal Cyan)
-- صفحة استعلام عن الكرت
-- خدمة سلفني
-- مولّد كروت مع QR
-- محرر بصري No-Code
-
-## تشغيل محلي
-python -m http.server 8000 --directory web
+## الصفحات
+- web/index/index.html — نقطة دخول موحدة
+- web/templates/login_01..20/ — 20 قالب فريد
+- web/templates/card_inquiry/ — استعلام
+- web/voucher/ — مولّد كروت
+- web/editor/ — محرر بصري
+- web/app/ — تحميل التطبيق
 
 ## المطور
 تصميم وتطوير: حسين العولقي | هاتف: 738660998
