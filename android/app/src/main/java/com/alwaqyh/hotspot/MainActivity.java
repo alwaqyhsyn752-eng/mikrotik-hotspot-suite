@@ -64,7 +64,7 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         });
-        webView.loadUrl("file:///android_asset/web/index/index.html");
+        webView.loadUrl("file:///android_asset/web/dashboard/index.html");
     }
 
     public class JsBridge {
