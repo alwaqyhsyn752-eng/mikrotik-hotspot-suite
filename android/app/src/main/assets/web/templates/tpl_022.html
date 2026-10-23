@@ -1,0 +1,55 @@
+<!DOCTYPE html><html lang="ar" dir="rtl"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0"><title>شبكة المستقبل</title><style>
+    *{box-sizing:border-box;margin:0;padding:0;font-family:'Segoe UI',sans-serif}
+    body{min-height:100vh;display:flex;justify-content:center;align-items:center;background:radial-gradient(circle at 50% 0%,#0f172a,#020617);color:#fff;overflow:hidden}
+    .marquee{position:absolute;top:10px;width:100%;text-align:center;color:#818cf8;font-size:14px;font-weight:bold}
+    .card{background:#000;border:2px solid #818cf8;box-shadow:0 0 20px #818cf8,inset 0 0 20px #818cf8;clip-path:polygon(0 0,100% 0,100% 90%,90% 100%,0 100%); padding:30px;position:relative;z-index:2;width:90%;max-width:400px;text-align:center;}
+    h1{color:#818cf8;margin-bottom:5px;text-shadow:0 0 10px #818cf8;}
+    .sub{font-size:12px;opacity:0.7;margin-bottom:20px}
+    input{width:100%;padding:12px;margin-bottom:10px;border-radius:8px;border:1px solid rgba(148,163,184,0.3);background:rgba(0,0,0,0.3);color:inherit;outline:none;text-align:right;}
+    input:focus{border-color:#818cf8;box-shadow:0 0 10px #818cf8;}
+    .btn{width:100%;padding:12px;border:none;border-radius:8px;background:#818cf8;color:#000;font-weight:bold;cursor:pointer;font-size:16px;transition:0.3s;}
+    .btn:hover{filter:brightness(1.1);}
+    .features{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:15px;}
+    .features button{padding:8px;background:transparent;border:1px solid #818cf8;color:#818cf8;border-radius:6px;font-size:11px;cursor:pointer;transition:0.3s;}
+    .features button:hover{background:#818cf8;color:#000;}
+    .dev{font-size:10px;opacity:0.6;margin-top:20px;border-top:1px solid rgba(148,163,184,0.2);padding-top:10px;}
+    @keyframes bg{0%,100%{background-position:0% 50%}50%{background-position:100% 50%}}
+    </style></head><body>
+    <div class="marquee"><marquee>بِسْمِ اللَّهِ الرَّحْمَنِ الرَّحِيمِ - أهلاً بكم في شبكة المستقبل</marquee></div>
+    <div class="card">
+      <h1 id="netName">شبكة المستقبل</h1>
+      <div class="sub" id="netPhone">هاتف: 738660998 | <span id="clock"></span></div>
+      <form onsubmit="event.preventDefault(); localStorage.setItem('v', this.querySelector('input').value); alert('تم تسجيل الدخول (محاكاة)');">
+        <input type="text" placeholder="رقم الكرت / اسم المستخدم" required>
+        <input type="password" placeholder="كلمة المرور" required>
+        <button class="btn" type="submit">دخول</button>
+      </form>
+      <div class="features">
+        <button onclick="alert('تشغيل القرآن الكريم')">القرآن</button>
+        <button onclick="alert('الألعاب')">الألعاب</button>
+        <button onclick="spinWheel()">عجلة الحظ</button>
+        <button onclick="checkWallet()">المحفظة</button>
+        <button onclick="alert('اختبار السرعة...')">السرعة</button>
+        <button onclick="alert('الأسعار: 5GB = 500 ريال')">الأسعار</button>
+      </div>
+      <div class="dev">تصميم وتطوير: حسين العولقي | هاتف: 738660998</div>
+    </div>
+    <script>
+      setInterval(() => { document.getElementById('clock').innerText=new Date().toLocaleTimeString('ar-EG'); }, 1000);
+      function spinWheel() {
+        const last = localStorage.getItem('lastSpin');
+        if (last && Date.now() - last < 86400000) { alert('العجلة تفتح مرة كل 24 ساعة'); return; }
+        localStorage.setItem('lastSpin', Date.now());
+        alert('مبروك! ربحت 100MB');
+      }
+      function checkWallet() {
+        const w = JSON.parse(localStorage.getItem('wallet') || '[]');
+        alert('آخر كروت: ' + (w.length ? w.join(', ') : 'فارغة'));
+      }
+      document.querySelector('input').addEventListener('input', function() {
+        if (this.value.length > 3) {
+          let w = JSON.parse(localStorage.getItem('wallet') || '[]');
+          if (!w.includes(this.value)) { w.unshift(this.value); w = w.slice(0, 3); localStorage.setItem('wallet', JSON.stringify(w)); }
+        }
+      });
+    </script></body></html>
