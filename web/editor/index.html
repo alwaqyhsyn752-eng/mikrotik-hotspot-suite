@@ -1,1 +1,120 @@
-<!DOCTYPE html><html lang="ar" dir="rtl"><head><meta charset="UTF-8"><style>body{background:#020617;color:#fff;display:flex;flex-direction:column;height:100vh;margin:0;font-family:system-ui}.bar{padding:10px;background:#0b1220;display:flex;gap:10px;flex-wrap:wrap;align-items:center;border-bottom:1px solid #22d3ee}.bar label{font-size:12px;color:#22d3ee}input,select{padding:5px;border-radius:5px;border:1px solid #334155;background:#000;color:#fff}iframe{flex:1;border:none;width:100%}</style></head><body><div class="bar"><label>القالب: <select id="tpl" onchange="document.getElementById('f').src='../templates/tpl_'+this.value+'.html'"><option value="001">001</option><option value="011">011</option><option value="021">021</option><option value="031">031</option><option value="041">041</option><option value="051">051</option><option value="061">061</option><option value="071">071</option><option value="081">081</option><option value="091">091</option></select></label><label>الشبكة: <input type="text" id="netName" value="شبكة المستقبل" oninput="apply()"></label><label>الهاتف: <input type="text" id="netPhone" value="738660998" oninput="apply()"></label><label>اللون: <input type="color" id="color" value="#22d3ee" oninput="apply()"></label></div><iframe id="f" src="../templates/tpl_001.html" onload="apply()"></iframe><script>function apply(){let iframe=document.getElementById("f");let doc=iframe.contentDocument||iframe.contentWindow.document;if(!doc)return;let name=document.getElementById("netName").value;let phone=document.getElementById("netPhone").value;let color=document.getElementById("color").value;let h1=doc.getElementById("netName");if(h1)h1.innerText=name;let sub=doc.getElementById("netPhone");if(sub)sub.innerHTML="هاتف: "+phone+" | <span id=clock></span>";let btn=doc.querySelector(".btn");if(btn)btn.style.background=color;let inputs=doc.querySelectorAll("input");inputs.forEach(i=>i.style.borderColor=color);let btns=doc.querySelectorAll(".features button");btns.forEach(b=>{b.style.borderColor=color;b.style.color=color});let css=doc.createElement("style");css.innerHTML=`h1,.sub{color:${color}!important}.card{border-color:${color}!important}`;doc.head.appendChild(css)}</script></body></html>
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no">
+<title>استوديو هوت سبوت - مصمم الواجهات</title>
+<style>
+:root{--bg:#020617;--sur:#0f172a;--sur2:#1e293b;--bor:#334155;--pri:#22d3ee;--txt:#f1f5f9;--mut:#94a3b8}
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{height:100%;overflow:hidden}
+body{font-family:'Segoe UI',Tahoma,sans-serif;background:var(--bg);color:var(--txt);user-select:none}
+.app{display:grid;grid-template-columns:260px 1fr 260px;grid-template-rows:52px 1fr;height:100vh}
+.toolbar{grid-column:1/-1;background:var(--sur);border-bottom:1px solid var(--bor);display:flex;align-items:center;padding:0 12px;gap:8px}
+.logo{font-size:15px;font-weight:800;color:var(--pri)}
+.spacer{flex:1}
+.btn{padding:7px 14px;border:none;border-radius:6px;background:var(--sur2);color:var(--txt);font-family:inherit;font-size:12px;font-weight:600;cursor:pointer;transition:.2s}
+.btn:hover{background:var(--pri);color:var(--bg)}
+.btn.pri{background:var(--pri);color:var(--bg)}
+.side{background:var(--sur);border-left:1px solid var(--bor);border-right:1px solid var(--bor);display:flex;flex-direction:column;overflow:hidden}
+.tabs{display:flex;background:var(--sur2);border-bottom:1px solid var(--bor)}
+.tab{flex:1;padding:10px 4px;text-align:center;font-size:11px;cursor:pointer;color:var(--mut);border-bottom:2px solid transparent}
+.tab.on{color:var(--pri);border-bottom-color:var(--pri);background:var(--sur)}
+.tb{flex:1;overflow-y:auto;padding:10px;display:none}
+.tb.on{display:block}
+.sec{margin-bottom:14px}
+.sec h4{font-size:10px;color:var(--mut);text-transform:uppercase;letter-spacing:1px;margin-bottom:6px}
+.cg{display:grid;grid-template-columns:repeat(6,1fr);gap:5px}
+.cs{aspect-ratio:1;border-radius:5px;cursor:pointer;border:2px solid transparent}
+.cs:hover{border-color:var(--pri)}
+.gg{display:grid;grid-template-columns:repeat(3,1fr);gap:5px}
+.gs{aspect-ratio:1;border-radius:5px;cursor:pointer;border:2px solid transparent}
+.gs:hover{border-color:var(--pri)}
+.el-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:6px}
+.el-it{padding:10px 4px;background:var(--sur2);border:1px solid var(--bor);border-radius:6px;text-align:center;font-size:10px;cursor:pointer;transition:.2s}
+.el-it:hover{border-color:var(--pri);background:rgba(34,211,238,.1)}
+.fc h5{font-size:10px;color:var(--pri);padding:5px 0;border-bottom:1px solid var(--bor);margin-bottom:5px}
+.fi{padding:9px;background:var(--sur2);border:1px solid var(--bor);border-radius:6px;margin-bottom:5px;cursor:pointer;font-size:11px}
+.fi:hover{border-color:var(--pri);background:rgba(34,211,238,.1)}
+.ws{background:#0a0f1f;background-image:linear-gradient(rgba(34,211,238,.05) 1px,transparent 1px),linear-gradient(90deg,rgba(34,211,238,.05) 1px,transparent 1px);background-size:30px 30px;display:flex;align-items:center;justify-content:center;overflow:auto;padding:20px}
+.cw{position:relative;box-shadow:0 0 40px rgba(0,0,0,.8);flex-shrink:0}
+.cv{width:375px;height:667px;background:#0f172a;position:relative;overflow:hidden;border-radius:6px;transform-origin:top center}
+.ce{position:absolute;cursor:move;user-select:none;border:1px solid transparent;min-width:20px;min-height:20px}
+.ce.sel{border-color:var(--pri);box-shadow:0 0 0 1px var(--pri)}
+.ce.sel::after{content:'';position:absolute;inset:-4px;border:1px dashed var(--pri);pointer-events:none;opacity:.5}
+.rh{position:absolute;width:14px;height:14px;background:var(--pri);border:2px solid var(--bg);border-radius:50%;bottom:-7px;right:-7px;cursor:nwse-resize;display:none;z-index:99}
+.ce.sel .rh{display:block}
+.pp{padding:10px;overflow-y:auto;max-height:calc(100vh - 120px)}
+.pr{margin-bottom:9px}
+.pr label{display:block;font-size:10px;color:var(--mut);margin-bottom:3px}
+.pr input,.pr select,.pr textarea{width:100%;padding:6px;border:1px solid var(--bor);background:var(--bg);color:var(--txt);border-radius:5px;font-family:inherit;font-size:11px}
+.pr input[type=color]{height:32px;padding:1px}
+.pr input[type=range]{padding:0}
+.pr .row{display:grid;grid-template-columns:1fr 1fr;gap:5px}
+.empty{text-align:center;color:var(--mut);font-size:11px;padding:30px 15px;line-height:1.8}
+.mn{display:none}
+.modal{display:none;position:fixed;inset:0;background:rgba(0,0,0,.92);z-index:1000;padding:12px;flex-direction:column}
+.modal.on{display:flex}
+.mh{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;font-size:13px;font-weight:700;color:var(--pri)}
+.modal iframe{flex:1;border:1px solid var(--bor);border-radius:6px;background:#fff}
+.btn-sm{padding:5px 10px;font-size:11px}
+@media(max-width:900px){
+  .app{grid-template-columns:1fr;grid-template-rows:52px 1fr 56px}
+  .side{display:none}
+  .side.on{display:flex;position:fixed;top:52px;bottom:56px;left:0;right:0;z-index:100}
+  .mn{display:flex;background:var(--sur);border-top:1px solid var(--bor)}
+  .mn button{flex:1;background:none;border:none;color:var(--mut);font-family:inherit;font-size:10px;padding:8px;cursor:pointer}
+  .mn button.on{color:var(--pri)}
+  .cv{transform:scale(.8)}
+}
+</style>
+</head>
+<body>
+<div class="app">
+  <div class="toolbar">
+    <div class="logo">استوديو هوت سبوت</div>
+    <div class="spacer"></div>
+    <button class="btn btn-sm" onclick="app.clear()">مسح</button>
+    <button class="btn btn-sm" onclick="app.preview()">معاينة</button>
+    <button class="btn pri btn-sm" onclick="app.exportHTML()">تصدير HTML</button>
+  </div>
+
+  <div class="side" id="leftPanel">
+    <div class="tabs">
+      <div class="tab on" data-tab="bg">خلفيات</div>
+      <div class="tab" data-tab="el">عناصر</div>
+      <div class="tab" data-tab="feat">ميزات</div>
+    </div>
+    <div class="tb on" data-tb="bg" id="bgPanel"></div>
+    <div class="tb" data-tb="el" id="elPanel"></div>
+    <div class="tb" data-tb="feat" id="featPanel"></div>
+  </div>
+
+  <div class="ws">
+    <div class="cw"><div class="cv" id="canvas"></div></div>
+  </div>
+
+  <div class="side" id="rightPanel">
+    <div class="tabs"><div class="tab on">الخصائص</div></div>
+    <div class="pp" id="props">
+      <div class="empty">اختر عنصراً من اللوحة لتعديل خصائصه<br>أو اختر خلفية من اللوحة اليسرى</div>
+    </div>
+  </div>
+
+  <div class="mn">
+    <button data-m="bg">خلفيات</button>
+    <button data-m="el">عناصر</button>
+    <button data-m="feat">ميزات</button>
+    <button data-m="props">خصائص</button>
+  </div>
+</div>
+
+<div class="modal" id="modal">
+  <div class="mh"><span>معاينة</span><button class="btn btn-sm" onclick="document.getElementById('modal').classList.remove('on')">إغلاق</button></div>
+  <iframe id="prevFrm"></iframe>
+</div>
+
+<script src="js/features.js"></script>
+<script src="js/editor.js"></script>
+</body>
+</html>
